@@ -2,17 +2,18 @@
 
 A machine learning project that classifies SMS messages as **spam** or **ham (not spam)** using Natural Language Processing (NLP) techniques. 
 
-This project implements and compares two commonly used models for text classification: **Logistic Regression** and **Multinomial Naive Bayes**, allowing for a practical understanding of how different algorithms perform on word-based data.
+This project implements and compares two commonly used models for text classification: **Logistic Regression** and **Multinomial Naive Bayes**, allowing for a practical understanding of how different algorithms perform on word-based data. 
 
 ## 🚀 Features
 - Text vectorisation using:
   - TF-IDF
   - Count Vectorizer
-- Multiple machine learning models:
+- Machine learning models:
   - Logistic Regression
   - Multinomial Naive Bayes
+- End-to-end ML pipelines (vectorisation + model)
 - Hyperparameter tuning using GridSearchCV
-- Model evaluation metrics:
+- Model evaluation using:
   - Accuracy
   - Precision
   - Recall
@@ -20,14 +21,14 @@ This project implements and compares two commonly used models for text classific
 - Confusion matrix visualisation
 
 ## 🧠 Machine Learning Workflow
-1. Load and clean dataset
-2. Remove duplicate messages
-3. Convert text into numerical features
-4. Split data into training and testing sets
-5. Train model
-6. Tune hyperparameters
-7. Evaluate model performance
-8. Compare models
+1. Load and clean dataset  
+2. Remove duplicate messages  
+3. Split data into training and testing sets  
+4. Build pipelines (vectorisation + model)  
+5. Train models using GridSearchCV  
+6. Tune hyperparameters  
+7. Evaluate model performance on unseen data  
+8. Compare model results  
 
 ## 📊 Dataset
 This project uses a labelled dataset of SMS messages:

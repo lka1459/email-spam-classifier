@@ -1,51 +1,56 @@
+#Import neccessary libraries
 import pandas as pd
 import numpy as np
-from typing import Dict, List, TypedDict, Sequence, Any
+from typing import Dict, List, TypedDict
 import sklearn
-from scipy.sparse import spmatrix
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.model_selection import GridSearchCV
 import matplotlib.pyplot as plt
 
+#Loading the dataset
 df: pd.DataFrame = pd.read_csv("spamhamdata.csv", sep="\t", names=["label", "message"])
 df.drop_duplicates(inplace=True)
 
+X: pd.Series = df["message"]
+y: pd.Series = df['label'].map({"spam": 1, "ham": 0})
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+#Defining a TypedDict (allows for more accurate type hints)
 class ModelConfig(TypedDict):
-    model: sklearn.base.BaseEstimator
-    vectoriser: sklearn.base.BaseEstimator
-    param_grid: Dict[str, Sequence[Any]]
+    pipeline: Pipeline
+    param_grid: Dict
 
-
-parameters_list: List[ModelConfig] = [{
-    'model': LogisticRegression(max_iter=200),
-    'vectoriser': TfidfVectorizer(stop_words='english'),
+#Creating a list of pipelines and param_grids
+pipelines: List[ModelConfig] = [{
+    'pipeline': Pipeline([
+    ('scaler', TfidfVectorizer()),
+    ('classifier', LogisticRegression())
+]),
     'param_grid': {
-         'max_iter'  : [100,1000,2500,5000],
-        'C': np.logspace(-4,4,20)
+         'classifier__max_iter'  : [100,1000,2500,5000],
+        'classifier__C': np.logspace(-4,4,20)
     }
 }, {
-    'model': MultinomialNB(),
-    'vectoriser': CountVectorizer(stop_words='english'),
+    'pipeline': Pipeline([
+    ('scaler', CountVectorizer()),
+    ('classifier', MultinomialNB())
+]),
     'param_grid': {
-    'alpha': [0.1, 0.5, 1.0, 2.0],
+    'classifier__alpha': [0.1, 0.5, 1.0, 2.0],
 }
-}]
+},]
 
-def model_training(chosen_model: Dict) -> str:
+#Function that trains the model
+def model_training(pipeline_config: ModelConfig) -> str:
     output: str = "---Results----- \n"
-    X: spmatrix = chosen_model['vectoriser'].fit_transform(df['message'])
-    y: pd.Series = df['label'].map({"spam": 1, "ham": 0}) 
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
-
-    model: sklearn.base.BaseEstimator = chosen_model["model"]
-    model.fit(X_train, y_train)
-
-    param_grid: Dict[str] = chosen_model['param_grid']
+    model: sklearn.base.BaseEstimator = pipeline_config["pipeline"]
+    param_grid: Dict[str] = pipeline_config['param_grid']
 
     improved_model: GridSearchCV = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, verbose=True)
 
@@ -56,7 +61,7 @@ def model_training(chosen_model: Dict) -> str:
 
     print(output)
 
-    evaluation_request: str = input("Would you like to see the evaluation of the model? (yes/no): ").lower()
+    evaluation_request: str = input("Would you like to see the evaluation of the model? (yes/no): ").lower().strip()
 
     if evaluation_request == "yes":
 
@@ -82,15 +87,16 @@ def model_training(chosen_model: Dict) -> str:
     else:
         return "No evaluation."    
 
+#Runs the main program
 def main() -> None:
-    model_choice: str = input("Select a model - Logistic Regression or Naive Bayers (l/n): ").lower()
+    model_choice: str = input("Select a model - Logistic Regression or Naive Bayes (l/n): ").lower().strip()
 
     if model_choice == "l":
-        chosen_model = parameters_list[0]
+        chosen_model = pipelines[0]
         print(model_training(chosen_model))
 
     elif model_choice == "n":
-        chosen_model = parameters_list[1]
+        chosen_model = pipelines[1]
         print(model_training(chosen_model))
     else:
         print("Please select an appropriate model (l or n).")

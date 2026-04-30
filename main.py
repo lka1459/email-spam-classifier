@@ -1,4 +1,4 @@
-#Import neccessary libraries
+#Import necessary libraries
 import pandas as pd
 import numpy as np
 from typing import Dict, List, TypedDict
@@ -28,7 +28,7 @@ class ModelConfig(TypedDict):
 #Creating a list of pipelines and param_grids
 pipelines: List[ModelConfig] = [{
     'pipeline': Pipeline([
-    ('scaler', TfidfVectorizer()),
+    ('vectoriser', TfidfVectorizer()),
     ('classifier', LogisticRegression())
 ]),
     'param_grid': {
@@ -37,7 +37,7 @@ pipelines: List[ModelConfig] = [{
     }
 }, {
     'pipeline': Pipeline([
-    ('scaler', CountVectorizer()),
+    ('vectoriser', CountVectorizer()),
     ('classifier', MultinomialNB())
 ]),
     'param_grid': {
@@ -61,6 +61,19 @@ def model_training(pipeline_config: ModelConfig) -> str:
 
     print(output)
 
+    #User input code
+    user_Input: str = input("Enter an email or SMS message to classify as spam or ham: ").strip()
+    processed_Input: List[str] = [user_Input]
+    if not user_Input:
+        print("No input provided. Please enter a valid message.")
+    else: 
+        input_Prediction: np.array = improved_model.best_estimator_.predict(processed_Input)
+        if 0 in input_Prediction:
+            print("Prediction: Ham")
+        else:
+            print("Prediction: Spam")
+    
+    #Evaluation code
     evaluation_request: str = input("Would you like to see the evaluation of the model? (yes/no): ").lower().strip()
 
     if evaluation_request == "yes":

@@ -19,6 +19,7 @@ This project implements and compares two commonly used models for text classific
   - Recall
   - F1 Score
 - Confusion matrix visualisation
+- Interactive user input for real-time message classification
 
 ## 🧠 Machine Learning Workflow
 1. Load and clean dataset  
@@ -28,7 +29,8 @@ This project implements and compares two commonly used models for text classific
 5. Train models using GridSearchCV  
 6. Tune hyperparameters  
 7. Evaluate model performance on unseen data  
-8. Compare model results  
+8. Compare model results
+9. Classify custom user input messages  
 
 ## 📊 Dataset
 This project uses a labelled dataset of SMS messages:
@@ -53,7 +55,7 @@ The model outputs:
 - Recall
 - F1 Score
 
-and displays a confusion matrix for visual evaluation.
+A confusion matrix is also generated for visual performance analysis.
 
 ## ▶️ How to Run
 

@@ -60,8 +60,7 @@ A confusion matrix is also generated for visual performance analysis.
 ## ▶️ How to Run
 
 1. Install dependencies:
-pip install pandas numpy scikit-learn matplotlib
-
+pip install -r requirements.txt
 
 2. Run the program:
 

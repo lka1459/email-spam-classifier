@@ -13,7 +13,7 @@ from sklearn.model_selection import GridSearchCV
 import matplotlib.pyplot as plt
 
 #Loading the dataset
-df: pd.DataFrame = pd.read_csv("spamhamdata.csv", sep="\t", names=["label", "message"])
+df: pd.DataFrame = pd.read_csv("data/spamhamdata.csv", sep="\t", names=["label", "message"])
 df.drop_duplicates(inplace=True)
 
 X: pd.Series = df["message"]
